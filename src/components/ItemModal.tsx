@@ -31,7 +31,6 @@ export default function ItemModal({ isOpen, initialData, onClose, onSubmit }: Pr
             transition={{ duration: 0.3, ease: "easeOut" }}
             className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md mx-auto"
           >
-            {/* عنوان وسط */}
             <h2 className="text-xl font-semibold mb-6 text-gray-800 text-center">
               {initialData ? "ویرایش آیتم" : "افزودن آیتم"}
             </h2>
@@ -60,7 +59,6 @@ export default function ItemModal({ isOpen, initialData, onClose, onSubmit }: Pr
                 />
               </div>
 
-              {/* دکمه‌ها پایین سمت چپ */}
               <div className="flex justify-start gap-3 mt-4">
                 <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">
                   لغو
