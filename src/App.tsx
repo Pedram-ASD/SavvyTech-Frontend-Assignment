@@ -13,19 +13,22 @@ export type Item = {
   title: string;
   subtitle?: string;
   createdAt: string;
+  updatedAt?: string;
 };
 
 export default function App() {
   const [items, setItems] = useState<Item[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Item | null>(null);
+  const getCurrentJalali = () =>
+    dayjs().calendar("jalali").locale("fa").format("YYYY/MM/DD HH:mm");
 
   const handleAddItem = (data: { title: string; subtitle: string }) => {
     const newItem: Item = {
       id: Date.now().toString(),
       title: data.title,
       subtitle: data.subtitle,
-      createdAt: dayjs().calendar("jalali").locale("fa").format("YYYY/MM/DD HH:mm"),
+      createdAt: getCurrentJalali(),
     };
     setItems((prev) => [...prev, newItem]);
     setModalOpen(false);
@@ -36,7 +39,7 @@ export default function App() {
     setItems((prev) =>
       prev.map((i) =>
         i.id === editingItem.id
-          ? { ...i, ...data, createdAt: dayjs().calendar("jalali").locale("fa").format("YYYY/MM/DD HH:mm") }
+          ? { ...i, ...data, updatedAt: getCurrentJalali() }
           : i
       )
     );
@@ -48,32 +51,30 @@ export default function App() {
     setItems((prev) => prev.filter((i) => i.id !== id));
   };
 
+  const openAddModal = () => {
+    setEditingItem(null);
+    setModalOpen(true);
+  };
+
+  const openEditModal = (item: Item) => {
+    setEditingItem(item);
+    setModalOpen(true);
+  };
+
   return (
     <div className="min-h-screen flex justify-center items-start pt-12">
       <div className="max-w-3xl w-full">
         <div className="flex justify-between items-center mb-6">
           <button
-            onClick={() => {
-              setEditingItem(null);
-              setModalOpen(true);
-            }}
+            onClick={openAddModal}
             className="p-2 rounded-full hover:bg-purple-100 transition"
           >
             <Plus className="w-6 h-6 text-purple-500" />
           </button>
 
-          <h1 className="text-2xl font-bold text-gray-800"> لیست آیتم‌ها</h1>
+          <h1 className="text-2xl font-bold text-gray-800">لیست آیتم‌ها</h1>
         </div>
-
-        <ItemTable
-          items={items}
-          onEdit={(item) => {
-            setEditingItem(item);
-            setModalOpen(true);
-          }}
-          onDelete={handleDelete}
-        />
-
+        <ItemTable items={items} onEdit={openEditModal} onDelete={handleDelete} />
         <ItemModal
           isOpen={modalOpen}
           initialData={editingItem || undefined}
